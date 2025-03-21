@@ -7,11 +7,11 @@ enum COLOR {
 enum ROLES {
 	NONE,
 	SEDUCER,
-	VENGSPIT,
-	POACHER,
+	AVENGER,
+	HUNTER,
 	GLUTTONY,
-	STRATEG,
-	JESTER
+	MARSHAL,
+	TRIXTER
 }
 
 var color: COLOR = COLOR.WHITE
@@ -40,25 +40,25 @@ func get_role_string(role: ROLES) -> String:
 			return "none"
 		ROLES.SEDUCER:
 			return "seducer"
-		ROLES.VENGSPIT:
-			return "vengspit"
-		ROLES.POACHER:
-			return "poacher"
+		ROLES.AVENGER:
+			return "avenger"
+		ROLES.HUNTER:
+			return "hunter"
 		ROLES.GLUTTONY:
 			return "gluttony"
-		ROLES.STRATEG:
-			return "strateg"
-		ROLES.JESTER:
-			return "jester"
+		ROLES.MARSHAL:
+			return "marshal"
+		ROLES.TRIXTER:
+			return "trixter"
 		_ :
 			return "unknown"
 
 func reload_texture() -> void:
 	var path: String
 	if is_major:
-		path = "res://assets/chekers/" + get_color_string(color) + "/major.png"
+		path = "res://assets/checkers/" + get_color_string(color) + "/major.png"
 	else:
-		path = "res://assets/chekers/" + get_color_string(color) + "/" + get_role_string(role) + ".png"
+		path = "res://assets/checkers/" + get_color_string(color) + "/" + get_role_string(role) + ".png"
 
 	print(path)
 	texture = load(path)
