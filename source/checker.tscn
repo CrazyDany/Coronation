@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://k18oxkkxtiec"]
+
+[ext_resource type="Script" uid="uid://cvockde4lwq36" path="res://source/checker.gd" id="1_7x6hb"]
+
+[node name="Checker" type="Node2D"]
+script = ExtResource("1_7x6hb")
