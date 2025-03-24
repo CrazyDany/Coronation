@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://k18oxkkxtiec"]
+[gd_scene load_steps=5 format=3 uid="uid://k18oxkkxtiec"]
 
 [ext_resource type="Script" uid="uid://cvockde4lwq36" path="res://source/checker.gd" id="1_7x6hb"]
+[ext_resource type="Shader" uid="uid://bv577gf35tp5q" path="res://shaders/outline.gdshader" id="1_b86cc"]
+[ext_resource type="Texture2D" uid="uid://driw6w6vpbbra" path="res://assets/checkers/white/none.png" id="2_keafs"]
 
-[node name="Checker" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sl64y"]
+shader = ExtResource("1_b86cc")
+shader_parameter/width = 2
+shader_parameter/outline_color = Color(0, 0.811765, 1, 1)
+shader_parameter/flickering_speed = 0.0
+shader_parameter/minimal_flickering_alpha = 0.0
+
+[node name="Checker" type="Sprite2D"]
+material = SubResource("ShaderMaterial_sl64y")
+texture = ExtResource("2_keafs")
 script = ExtResource("1_7x6hb")

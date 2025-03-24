@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://driw6w6vpbbra"
-path="res://.godot/imported/none.png-36ea691d1f9df536827b4259a100fafd.ctex"
+uid="uid://d05r8uddm2ag2"
+path="res://.godot/imported/mini_avenger.png-8deeafb7bab7f6392b3831400be5afa2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/checkers/white/none.png"
-dest_files=["res://.godot/imported/none.png-36ea691d1f9df536827b4259a100fafd.ctex"]
+source_file="res://assets/cards/mini_avenger.png"
+dest_files=["res://.godot/imported/mini_avenger.png-8deeafb7bab7f6392b3831400be5afa2.ctex"]
 
 [params]
 

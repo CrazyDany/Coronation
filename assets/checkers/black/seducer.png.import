@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://driw6w6vpbbra"
-path="res://.godot/imported/none.png-36ea691d1f9df536827b4259a100fafd.ctex"
+uid="uid://c6kmc5tfu6pu3"
+path="res://.godot/imported/seducer.png-e25ffe190886b46cfd4a80eff971f0ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/checkers/white/none.png"
-dest_files=["res://.godot/imported/none.png-36ea691d1f9df536827b4259a100fafd.ctex"]
+source_file="res://assets/checkers/black/seducer.png"
+dest_files=["res://.godot/imported/seducer.png-e25ffe190886b46cfd4a80eff971f0ed.ctex"]
 
 [params]
 

@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dp2vmi6pl3608"]
+
+[ext_resource type="Texture2D" uid="uid://cp1in1n6nckix" path="res://assets/board.png" id="1_p7wnt"]
+[ext_resource type="Script" uid="uid://dlx8dwqdrdg0g" path="res://source/board.gd" id="2_n5cw4"]
+
+[node name="DevState" type="Node2D"]
+
+[node name="Board" type="Sprite2D" parent="." node_paths=PackedStringArray("start_point", "cell_container")]
+position = Vector2(170, 179)
+texture = ExtResource("1_p7wnt")
+script = ExtResource("2_n5cw4")
+start_point = NodePath("StartPoint")
+cell_size = 32.0
+cell_container = NodePath("Cells")
+
+[node name="StartPoint" type="Marker2D" parent="Board"]
+position = Vector2(-160, -173)
+
+[node name="Cells" type="Node2D" parent="Board"]
+position = Vector2(-170, -179)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(170, 172)

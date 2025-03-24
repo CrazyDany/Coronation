@@ -1,35 +1,32 @@
 [gd_scene load_steps=5 format=3 uid="uid://dp2vmi6pl3608"]
 
 [ext_resource type="Texture2D" uid="uid://cp1in1n6nckix" path="res://assets/board.png" id="1_p7wnt"]
-[ext_resource type="Script" uid="uid://cvockde4lwq36" path="res://source/checker.gd" id="2_5q038"]
 [ext_resource type="Script" uid="uid://dlx8dwqdrdg0g" path="res://source/board.gd" id="2_n5cw4"]
-
-[sub_resource type="Theme" id="Theme_n5cw4"]
+[ext_resource type="Theme" uid="uid://jitmkttrht6d" path="res://assets/main_theme.tres" id="3_lf3jf"]
+[ext_resource type="FontFile" uid="uid://5mbrs774qq27" path="res://assets/fonts/alagard-12px-unicode.ttf" id="4_7du72"]
 
 [node name="DevState" type="Node2D"]
 
-[node name="Board" type="Sprite2D" parent="." node_paths=PackedStringArray("start_point", "cell_container")]
-position = Vector2(170, 179)
+[node name="Board" type="Sprite2D" parent="." node_paths=PackedStringArray("start_point", "turn_label")]
+position = Vector2(165, 179)
 texture = ExtResource("1_p7wnt")
 script = ExtResource("2_n5cw4")
-start_point = NodePath("Marker2D")
-cell_container = NodePath("Cells")
+start_point = NodePath("StartPoint")
+cell_size = 32.0
+turn_label = NodePath("../TurnLabel")
 
-[node name="Marker2D" type="Marker2D" parent="Board"]
-position = Vector2(-160, -166.5)
-
-[node name="Cells" type="Node2D" parent="Board"]
+[node name="StartPoint" type="Marker2D" parent="Board"]
+position = Vector2(-160, -173)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(170, 172)
 
-[node name="Checker" type="Node2D" parent="."]
-script = ExtResource("2_5q038")
-metadata/_custom_type_script = "uid://cvockde4lwq36"
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme = SubResource("Theme_n5cw4")
+[node name="TurnLabel" type="Label" parent="."]
+offset_left = -215.0
+offset_top = -37.0
+offset_right = -60.0
+offset_bottom = -14.0
+size_flags_horizontal = 0
+theme = ExtResource("3_lf3jf")
+theme_override_fonts/font = ExtResource("4_7du72")
+text = "Turn now: "
