@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8np8r4jidmts"]
+
+[ext_resource type="Shader" uid="uid://c65lw2ve4ngpl" path="res://shaders/flashing_overlay.gdshader" id="1_tlw01"]
+[ext_resource type="Script" uid="uid://f3apwne5cxyl" path="res://source/cell.gd" id="2_opkdq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_opkdq"]
+shader = ExtResource("1_tlw01")
+shader_parameter/color_a = Color(1, 1, 1, 1)
+shader_parameter/color_b = Color(1, 1, 1, 0)
+shader_parameter/colors_affect_alpha = true
+shader_parameter/flash_amount = 0.7
+shader_parameter/flash_speed = 5.0
+shader_parameter/transparency = 0.5
+shader_parameter/intensity = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_t405y"]
+size = Vector2(32, 32)
+
+[node name="Cell" type="MeshInstance2D"]
+material = SubResource("ShaderMaterial_opkdq")
+mesh = SubResource("QuadMesh_t405y")
+script = ExtResource("2_opkdq")

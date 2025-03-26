@@ -11,9 +11,10 @@ config_version=5
 [application]
 
 config/name="Coronation"
+config/version="0.0.01"
 run/main_scene="uid://dp2vmi6pl3608"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="uid://d4nm6x5umchx6"
 
 [display]
 

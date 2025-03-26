@@ -1,0 +1,243 @@
+[gd_scene load_steps=7 format=3 uid="uid://dp2vmi6pl3608"]
+
+[ext_resource type="Texture2D" uid="uid://cp1in1n6nckix" path="res://assets/board.png" id="1_p7wnt"]
+[ext_resource type="Theme" uid="uid://jitmkttrht6d" path="res://assets/main_theme.tres" id="3_lf3jf"]
+[ext_resource type="FontFile" uid="uid://5mbrs774qq27" path="res://assets/fonts/alagard-12px-unicode.ttf" id="4_7du72"]
+
+[sub_resource type="GDScript" id="GDScript_n5cw4"]
+script/source = "class_name GameManager extends Node2D
+
+@export var board_width: int = 8
+@export var board_height: int = 8
+@export var lines_of_checkers: int = 3
+
+@export var visual_manager: VisualManager
+
+# Состояние игры
+var current_turn: Checker.COLOR = Checker.COLOR.BLACK
+var cells: Dictionary[Vector2i, Cell] = {}
+var checkers: Dictionary[Vector2i, Checker] = {}
+
+func _ready():
+	initialize_board()
+	start_new_turn(current_turn)
+
+# Инициализация доски (логическая часть)
+func initialize_board():
+	# Создаем все клетки
+	for y in range(board_height):
+		for x in range(board_width):
+			var pos = Vector2i(x, y)
+			create_cell(pos)
+			
+			# Расстановка шашек
+			if should_place_checker(pos, Checker.COLOR.BLACK):
+				create_checker(Checker.COLOR.BLACK, pos)
+			elif should_place_checker(pos, Checker.COLOR.WHITE):
+				create_checker(Checker.COLOR.WHITE, pos)
+
+# Логика создания клетки
+func create_cell(pos: Vector2i) -> Cell:
+	var cell = visual_manager.instantiate_cell_visual(pos)
+	cells[pos] = cell
+	cell.position_in_board = pos
+	return cell
+
+# Логика создания шашки
+func create_checker(color: Checker.COLOR, pos: Vector2i) -> Checker:
+	var checker = visual_manager.instantiate_checker_visual(color, pos)
+	checkers[pos] = checker
+	checker.self_pose = pos
+	return checker
+
+# Правила начальной расстановки
+func should_place_checker(pos: Vector2i, color: Checker.COLOR) -> bool:
+	if (pos.x + pos.y) % 2 == 0:
+		if color == Checker.COLOR.BLACK and pos.y < lines_of_checkers:
+			return true
+		if color == Checker.COLOR.WHITE and pos.y >= (board_height - lines_of_checkers):
+			return true
+	return false
+
+# Управление ходами
+func start_new_turn(color: Checker.COLOR):
+	current_turn = color
+	visual_manager.update_turn_display(color)
+
+func change_turn():
+	current_turn = Checker.COLOR.WHITE if current_turn == Checker.COLOR.BLACK else Checker.COLOR.BLACK
+	start_new_turn(current_turn)
+
+# Валидация позиций
+func is_position_valid(pos: Vector2i) -> bool:
+	return pos.x >= 0 and pos.x < board_width and pos.y >= 0 and pos.y < board_height
+
+# Получение объектов
+func get_checker_at(pos: Vector2i) -> Checker:
+	return checkers.get(pos)
+
+func get_cell_at(pos: Vector2i) -> Cell:
+	return cells.get(pos)
+"
+
+[sub_resource type="GDScript" id="GDScript_lf3jf"]
+script/source = "class_name TurnManager extends Node2D
+
+@export var game_manager: GameManager
+var selected_checker: Checker
+var is_selecting: bool = false
+
+func start_turn(color: Checker.COLOR):
+	reset_selection()
+
+func on_checker_clicked(checker: Checker):
+	if is_selecting and selected_checker == checker:
+		reset_selection()
+		return
+		
+	if checker.color != game_manager.current_turn_color:
+		return
+		
+	selected_checker = checker
+	is_selecting = true
+	highlight_available_moves(checker)
+
+func on_cell_clicked(cell: Cell):
+	if not is_selecting or not selected_checker:
+		return
+		
+	if not cell.allow_to_move_here:
+		return
+		
+	# Перемещение шашки
+	game_manager.move_checker(selected_checker.self_pose, cell.position_in_board)
+	reset_selection()
+	game_manager.change_turn()
+
+func highlight_available_moves(checker: Checker):
+	game_manager.visual_manager.reset_all_highlights()
+	
+	var directions = [Vector2i(1,1), Vector2i(-1,1), Vector2i(1,-1), Vector2i(-1,-1)]
+	for dir in directions:
+		var neighbor_pos = checker.self_pose + dir
+		if not game_manager.is_position_valid(neighbor_pos):
+			continue
+			
+		var checker_at_pos = game_manager.get_checker_at(neighbor_pos)
+		if checker_at_pos == null:
+			game_manager.visual_manager.highlight_cell_at(neighbor_pos, true)
+		elif checker_at_pos.color != checker.color:
+			var jump_pos = neighbor_pos + dir
+			if game_manager.is_position_valid(jump_pos) and game_manager.get_checker_at(jump_pos) == null:
+				game_manager.visual_manager.highlight_cell_at(jump_pos, true)
+
+func reset_selection():
+	game_manager.visual_manager.reset_all_highlights()
+	selected_checker = null
+	is_selecting = false
+"
+
+[sub_resource type="GDScript" id="GDScript_7du72"]
+script/source = "class_name VisualManager extends Node2D
+
+# Настройки отображения
+@export var start_point: Marker2D
+@export var cell_size: float = 64.0
+@export var turn_label: Label
+@export var cells_container: Node2D
+@export var checkers_container: Node2D
+
+# Префабы
+var cell_scene = preload(\"res://objects/cell/Cell.tscn\")
+
+# Создание визуала клетки
+func instantiate_cell_visual(pos: Vector2i) -> Cell:
+	var cell = cell_scene.instantiate()
+	cell.position = _calculate_world_position(pos)
+	cells_container.add_child(cell)
+	cell.name = \"Cell_%d_%d\" % [pos.x, pos.y]
+	return cell
+
+# Создание визуала шашки
+func instantiate_checker_visual(color: Checker.COLOR, pos: Vector2i) -> Checker:
+	var checker = Checker.new(color)
+	checker.position = _calculate_world_position(pos)
+	checkers_container.add_child(checker)
+	return checker
+
+# Обновление UI
+func update_turn_display(color: Checker.COLOR):
+	turn_label.text = \"Ход: %s\" % [\"Чёрные\" if color == Checker.COLOR.BLACK else \"Белые\"]
+
+# Подсветка клеток
+func highlight_cells(positions: Array[Vector2i]):
+	for pos in positions:
+		var cell = get_cell_at(pos)
+		if cell:
+			cell.highlight(true)
+
+func reset_all_highlights():
+	for cell in cells_container.get_children():
+		if cell is Cell:
+			cell.highlight(false)
+
+# Вспомогательные методы
+func _calculate_world_position(board_pos: Vector2i) -> Vector2:
+	return start_point.position + Vector2(
+		board_pos.x * cell_size + cell_size/2,
+		board_pos.y * cell_size + cell_size/2
+	)
+
+func get_cell_at(pos: Vector2i) -> Cell:
+	for cell in cells_container.get_children():
+		if cell.position_in_board == pos:
+			return cell
+	return null
+"
+
+[node name="DevState" type="Node2D"]
+
+[node name="Board" type="Sprite2D" parent="."]
+position = Vector2(164, 178)
+texture = ExtResource("1_p7wnt")
+
+[node name="StartPoint" type="Marker2D" parent="Board"]
+position = Vector2(-144, -158)
+
+[node name="Checkers" type="Node2D" parent="Board"]
+position = Vector2(-16, -16)
+
+[node name="Cells" type="Node2D" parent="Board"]
+position = Vector2(-16, -15)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(170, 172)
+
+[node name="TurnLabel" type="Label" parent="."]
+offset_left = -215.0
+offset_top = -37.0
+offset_right = -60.0
+offset_bottom = -14.0
+size_flags_horizontal = 0
+theme = ExtResource("3_lf3jf")
+theme_override_fonts/font = ExtResource("4_7du72")
+text = "Turn now: "
+
+[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("visual_manager")]
+script = SubResource("GDScript_n5cw4")
+board_width = 10
+board_height = 10
+lines_of_checkers = 4
+visual_manager = NodePath("../VisualManager")
+
+[node name="TurnManager" type="Node2D" parent="." node_paths=PackedStringArray("game_manager")]
+script = SubResource("GDScript_lf3jf")
+game_manager = NodePath("../GameManager")
+
+[node name="VisualManager" type="Node2D" parent="." node_paths=PackedStringArray("start_point", "turn_label", "cells_container", "checkers_container")]
+script = SubResource("GDScript_7du72")
+start_point = NodePath("../Board/StartPoint")
+cell_size = 32.0
+turn_label = NodePath("../TurnLabel")
+cells_container = NodePath("../Board/Cells")
+checkers_container = NodePath("../Board/Checkers")

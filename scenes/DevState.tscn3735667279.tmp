@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://dp2vmi6pl3608"]
 
-[ext_resource type="Script" uid="uid://df2eyqjwkrknh" path="res://source/game_manager.gd" id="1_7du72"]
+[ext_resource type="Script" path="res://source/game_manager.gd" id="1_7du72"]
 [ext_resource type="Texture2D" uid="uid://cp1in1n6nckix" path="res://assets/board.png" id="1_p7wnt"]
 [ext_resource type="Theme" uid="uid://jitmkttrht6d" path="res://assets/main_theme.tres" id="3_lf3jf"]
 [ext_resource type="FontFile" uid="uid://5mbrs774qq27" path="res://assets/fonts/alagard-12px-unicode.ttf" id="4_7du72"]
-[ext_resource type="Script" uid="uid://ii1aak7kemab" path="res://source/turn_manager.gd" id="6_sx7ub"]
-[ext_resource type="Script" uid="uid://bhaegptbgjsmw" path="res://source/visual_manager.gd" id="7_ftliw"]
+[ext_resource type="Script" path="res://source/turn_manager.gd" id="6_sx7ub"]
+[ext_resource type="Script" path="res://source/visual_manager.gd" id="7_ftliw"]
 
 [node name="DevState" type="Node2D"]
 
@@ -35,22 +35,14 @@ theme = ExtResource("3_lf3jf")
 theme_override_fonts/font = ExtResource("4_7du72")
 text = "Turn now: "
 
-[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("visual_manager", "turn_manager")]
+[node name="GameManager" type="Node2D" parent="."]
 script = ExtResource("1_7du72")
 board_width = 10
 board_height = 10
 lines_of_checkers = 4
-visual_manager = NodePath("../VisualManager")
-turn_manager = NodePath("../TurnManager")
 
-[node name="TurnManager" type="Node2D" parent="." node_paths=PackedStringArray("game_manager")]
+[node name="TurnManager" type="Node2D" parent="."]
 script = ExtResource("6_sx7ub")
-game_manager = NodePath("../GameManager")
 
-[node name="VisualManager" type="Node2D" parent="." node_paths=PackedStringArray("start_point", "turn_label", "cells_container", "checkers_container")]
+[node name="VisualManager" type="Node2D" parent="."]
 script = ExtResource("7_ftliw")
-start_point = NodePath("../Board/StartPoint")
-cell_size = 32.0
-turn_label = NodePath("../TurnLabel")
-cells_container = NodePath("../Board/Cells")
-checkers_container = NodePath("../Board/Checkers")

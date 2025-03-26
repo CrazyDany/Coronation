@@ -14,9 +14,11 @@ enum ROLES {
 	TRIXTER
 }
 
+var has_ability: bool
+
 var color: COLOR = COLOR.WHITE
 var role: ROLES = ROLES.NONE
-var self_pose: Array = []
+var self_pose: Vector2i = Vector2i.ZERO
 
 var balance: float = 0
 var is_major: bool = false
@@ -25,10 +27,7 @@ var outline_actived: bool:
 	set(value):
 		outline_actived = value
 		if material:
-			if value == true:
-				material.set("shader_parameter/width", 1)
-			else:
-				material.set("shader_parameter/width", 0)
+			material.set("shader_parameter/width", 1 if value else 0)
 
 signal on_clicked(checker: Checker)
 
@@ -45,42 +44,23 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if (event.button_index == MOUSE_BUTTON_LEFT) and event.is_pressed(): 
 			if is_pixel_opaque(get_local_mouse_position()):
-				print("Мои координаты: " + str(self_pose))
 				on_clicked.emit(self)
 
-func get_color_string(color: COLOR) -> String:
-	match color:
-		COLOR.WHITE: 
-			return "white"
-		COLOR.BLACK: 
-			return "black"
-		_: 
-			return "unknown"
+func get_color_string(_color: COLOR) -> String:
+	return "white" if _color == COLOR.WHITE else "black"
 
-func get_role_string(role: ROLES) -> String:
-	match role:
-		ROLES.NONE: 
-			return "none"
-		ROLES.SEDUCER:
-			return "seducer"
-		ROLES.AVENGER:
-			return "avenger"
-		ROLES.HUNTER:
-			return "hunter"
-		ROLES.GLUTTONY:
-			return "gluttony"
-		ROLES.MARSHAL:
-			return "marshal"
-		ROLES.TRIXTER:
-			return "trixter"
-		_ :
-			return "unknown"
+func get_role_string(new_role: ROLES) -> String:
+	match new_role:
+		ROLES.SEDUCER: return "seducer"
+		ROLES.AVENGER: return "avenger"
+		ROLES.HUNTER: return "hunter"
+		ROLES.GLUTTONY: return "gluttony"
+		ROLES.MARSHAL: return "marshal"
+		ROLES.TRIXTER: return "trixter"
+		_: return "none"
 
 func reload_texture() -> void:
-	var path: String = "res://assets/checkers/" + get_color_string(color) + "/" + get_role_string(role) + ".png"
-	#print(path)
+	var path = "res://assets/checkers/%s/%s.png" % [get_color_string(color), get_role_string(role)]
 	texture = load(path)
 	if texture == null:
-		print("Ошибка: Текстура шашки не обнаружена в пути ", path)
-	else:
-		self.texture = texture
+		printerr("Ошибка: Текстура шашки не обнаружена в пути ", path)
