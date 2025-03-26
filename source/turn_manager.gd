@@ -16,6 +16,8 @@ func on_checker_clicked(checker: Checker):
 	if checker.color != game_manager.current_turn_color:
 		return
 		
+	if selected_checker:
+		selected_checker.outline_actived = false
 	selected_checker = checker
 	is_selecting = true
 	highlight_available_moves(checker)
