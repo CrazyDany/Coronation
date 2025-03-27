@@ -4,24 +4,47 @@ class_name TurnManager extends Node2D
 var selected_checker: Checker
 var is_selecting: bool = false
 
+var black_crown_checker: Checker
+var white_crown_checker: Checker
+
 func start_turn(color: Checker.COLOR):
 	reset_selection()
 
 func on_checker_clicked(checker: Checker):
-	print("Шашка нажата и ее координаты - " + str(checker.self_pose))
-	if is_selecting and selected_checker == checker:
-		reset_selection()
-		return
-		
-	if checker.color != game_manager.current_turn_color:
-		return
-		
-	if selected_checker:
-		selected_checker.outline_actived = false
-	selected_checker = checker
-	is_selecting = true
-	highlight_available_moves(checker)
-	checker.outline_actived = true
+	if not game_manager.in_cutscene:
+		if game_manager.cur_game_state == GameManager.GameStates.TURNS: #Или просто 2
+			print("Шашка нажата и ее координаты - " + str(checker.self_pose))
+			if is_selecting and selected_checker == checker:
+				reset_selection()
+				return
+				
+			if checker.color != game_manager.current_turn_color:
+				return
+				
+			if selected_checker:
+				selected_checker.outline_actived = false
+			selected_checker = checker
+			is_selecting = true
+			highlight_available_moves(checker)
+			checker.outline_actived = true
+			
+		elif game_manager.cur_game_state == GameManager.GameStates.BETS:
+			if checker.color == Checker.COLOR.BLACK:
+				if black_crown_checker:
+					print("Черная королевская пешка уже выбрана!")
+				else:
+					black_crown_checker = checker
+					checker.is_major = true
+			else:
+				if white_crown_checker:
+					print("Белая королевская пешка уже выбрана!")
+				else:
+					white_crown_checker = checker
+					checker.is_major = true
+			
+			if (white_crown_checker and black_crown_checker):
+				game_manager.visual_manager.start_cutscene("FIRST TURN!", 1.25)
+				game_manager.change_game_state(GameManager.GameStates.TURNS)
 
 func on_cell_clicked(cell: Cell):
 	if not is_selecting or not selected_checker:

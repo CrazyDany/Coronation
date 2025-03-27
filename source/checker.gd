@@ -4,6 +4,7 @@ enum COLOR {
 	WHITE,
 	BLACK
 }
+
 enum ROLES {
 	NONE,
 	SEDUCER,
@@ -17,11 +18,18 @@ enum ROLES {
 var has_ability: bool
 
 var color: COLOR = COLOR.WHITE
-var role: ROLES = ROLES.NONE
+var role: ROLES = ROLES.NONE:
+	set(value):
+		role = value
+		reload_texture()
+		
 var self_pose: Vector2i = Vector2i.ZERO
 
 var balance: float = 0
-var is_major: bool = false
+var is_major: bool = false:
+	set(value):
+		is_major = value
+		reload_texture()
 
 var outline_actived: bool:
 	set(value):
@@ -49,7 +57,7 @@ func _input(event: InputEvent) -> void:
 func get_color_string(_color: COLOR) -> String:
 	return "white" if _color == COLOR.WHITE else "black"
 
-func get_role_string(new_role: ROLES) -> String:
+static func get_role_string(new_role: ROLES) -> String:
 	match new_role:
 		ROLES.SEDUCER: return "seducer"
 		ROLES.AVENGER: return "avenger"
@@ -61,6 +69,11 @@ func get_role_string(new_role: ROLES) -> String:
 
 func reload_texture() -> void:
 	var path = "res://assets/checkers/%s/%s.png" % [get_color_string(color), get_role_string(role)]
+	if is_major:
+		var crown = Sprite2D.new()
+		crown.texture = load("res://assets/checkers/crown.png")
+		add_child(crown)
+		crown.position = Vector2(0, -10)
 	texture = load(path)
 	if texture == null:
 		printerr("Ошибка: Текстура шашки не обнаружена в пути ", path)

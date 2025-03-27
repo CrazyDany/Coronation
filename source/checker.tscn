@@ -6,7 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sl64y"]
 shader = ExtResource("1_b86cc")
-shader_parameter/width = 2
+shader_parameter/width = 1
 shader_parameter/outline_color = Color(0, 0.811765, 1, 1)
 shader_parameter/flickering_speed = 0.0
 shader_parameter/minimal_flickering_alpha = 0.0

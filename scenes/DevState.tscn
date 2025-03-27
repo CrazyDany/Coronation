@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dp2vmi6pl3608"]
+[gd_scene load_steps=10 format=3 uid="uid://dp2vmi6pl3608"]
 
 [ext_resource type="Script" uid="uid://df2eyqjwkrknh" path="res://source/game_manager.gd" id="1_7du72"]
 [ext_resource type="Texture2D" uid="uid://dout0f4texg04" path="res://assets/background.png" id="1_ftliw"]
@@ -7,10 +7,14 @@
 [ext_resource type="FontFile" uid="uid://5mbrs774qq27" path="res://assets/fonts/alagard-12px-unicode.ttf" id="4_7du72"]
 [ext_resource type="Script" uid="uid://ii1aak7kemab" path="res://source/turn_manager.gd" id="6_sx7ub"]
 [ext_resource type="Script" uid="uid://bhaegptbgjsmw" path="res://source/visual_manager.gd" id="7_ftliw"]
+[ext_resource type="Script" uid="uid://cn5nch3p5p1jf" path="res://source/cardscontainer.gd" id="8_8t4d0"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_8t4d0"]
 
 [node name="DevState" type="Node2D"]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="."]
+modulate = Color(0.625597, 0.625597, 0.625597, 1)
 position = Vector2(170, 172)
 texture = ExtResource("1_ftliw")
 
@@ -25,7 +29,7 @@ position = Vector2(-144, -158)
 position = Vector2(-16, -16)
 
 [node name="Cells" type="Node2D" parent="Board"]
-position = Vector2(-16, -15)
+position = Vector2(-16, -16)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(170, 172)
@@ -40,22 +44,59 @@ theme = ExtResource("3_lf3jf")
 theme_override_fonts/font = ExtResource("4_7du72")
 text = "Turn now: "
 
-[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("visual_manager", "turn_manager")]
+[node name="Managers" type="Node2D" parent="."]
+
+[node name="GameManager" type="Node2D" parent="Managers" node_paths=PackedStringArray("visual_manager", "turn_manager", "player1_cards_container", "player2_cards_container")]
 script = ExtResource("1_7du72")
 board_width = 10
 board_height = 10
 lines_of_checkers = 4
 visual_manager = NodePath("../VisualManager")
 turn_manager = NodePath("../TurnManager")
+player1_cards_container = NodePath("../../CardContainer Player1")
+player2_cards_container = NodePath("../../CardContainer Player2")
 
-[node name="TurnManager" type="Node2D" parent="." node_paths=PackedStringArray("game_manager")]
+[node name="TurnManager" type="Node2D" parent="Managers" node_paths=PackedStringArray("game_manager")]
 script = ExtResource("6_sx7ub")
 game_manager = NodePath("../GameManager")
 
-[node name="VisualManager" type="Node2D" parent="." node_paths=PackedStringArray("start_point", "turn_label", "cells_container", "checkers_container")]
+[node name="VisualManager" type="Node2D" parent="Managers" node_paths=PackedStringArray("start_point", "turn_label", "cells_container", "checkers_container", "game_manager", "fade_mesh", "cutscene_label")]
 script = ExtResource("7_ftliw")
-start_point = NodePath("../Board/StartPoint")
+start_point = NodePath("../../Board/StartPoint")
 cell_size = 32.0
-turn_label = NodePath("../TurnLabel")
-cells_container = NodePath("../Board/Cells")
-checkers_container = NodePath("../Board/Checkers")
+turn_label = NodePath("../../TurnLabel")
+cells_container = NodePath("../../Board/Cells")
+checkers_container = NodePath("../../Board/Checkers")
+game_manager = NodePath("../GameManager")
+fade_mesh = NodePath("../../FadeMesh")
+cutscene_label = NodePath("../../CutsceneLabel")
+
+[node name="CardContainer Player1" type="Node2D" parent="."]
+position = Vector2(-45, 330)
+script = ExtResource("8_8t4d0")
+
+[node name="CardContainer Player2" type="Node2D" parent="."]
+position = Vector2(-45, 330)
+script = ExtResource("8_8t4d0")
+
+[node name="FadeMesh" type="MeshInstance2D" parent="."]
+visible = false
+modulate = Color(0, 0, 0, 0.498039)
+position = Vector2(166.5, 169)
+scale = Vector2(821, 466)
+mesh = SubResource("QuadMesh_8t4d0")
+
+[node name="CutsceneLabel" type="Label" parent="."]
+visible = false
+offset_left = 18.0
+offset_top = 127.0
+offset_right = 311.0
+offset_bottom = 218.0
+size_flags_horizontal = 0
+theme = ExtResource("3_lf3jf")
+theme_override_fonts/font = ExtResource("4_7du72")
+theme_override_font_sizes/font_size = 32
+text = "MAKE YOUR BETS"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

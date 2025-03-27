@@ -7,6 +7,11 @@ class_name VisualManager extends Node2D
 @export var cells_container: Node2D
 @export var checkers_container: Node2D
 
+@export var game_manager: GameManager
+
+@export var fade_mesh: MeshInstance2D
+@export var cutscene_label: Label
+
 # Префабы
 var cell_scene = preload("res://objects/cell/Cell.tscn")
 
@@ -67,9 +72,29 @@ func move_checker_visual(checker: Checker, new_pos: Vector2i):
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(checker, "position", target_position, 0.3)
-	tween.parallel().tween_property(checker, "scale", Vector2(1.1, 1.1), 0.15).set_delay(0)
-	tween.parallel().tween_property(checker, "scale", Vector2(1, 1), 0.3).set_delay(0.15)
+	tween.tween_property(checker, "position", target_position, 0.4)
+	tween.parallel().tween_property(checker, "scale", Vector2(1.1, 1.1), 0.2).set_delay(0)
+	tween.parallel().tween_property(checker, "scale", Vector2(1, 1), 0.4).set_delay(0.2)
 
 func remove_checker_visual(checker: Checker):
 	checker.queue_free()
+
+func start_cutscene(text: String, time:float) -> void:
+	game_manager.in_cutscene = true
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	fade_mesh.modulate.a = 0
+	cutscene_label.modulate.a = 0
+	fade_mesh.visible = true
+	cutscene_label.visible = true
+	cutscene_label.text = text
+	tween.tween_property(fade_mesh, "modulate:a", 0.4, 0.35)
+	tween.parallel().tween_property(cutscene_label, "modulate:a", 1, time)
+	tween.parallel().tween_property(fade_mesh, "modulate:a", 0.45, time).set_delay(0.35)
+	tween.parallel().tween_property(fade_mesh, "modulate:a", 0, 0.2).set_delay(0.35+time)
+	tween.parallel().tween_property(cutscene_label, "modulate:a", 0, time/3).set_delay(0.25+time)
+	await tween.finished
+	game_manager.in_cutscene = false
+	fade_mesh.visible = false
+	cutscene_label.visible = false

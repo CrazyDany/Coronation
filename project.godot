@@ -21,7 +21,6 @@ config/icon="uid://d4nm6x5umchx6"
 window/size/viewport_width=800
 window/size/viewport_height=450
 window/stretch/mode="viewport"
-window/stretch/scale_mode="integer"
 
 [rendering]
 

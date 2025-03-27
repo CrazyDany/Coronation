@@ -11,11 +11,33 @@ var current_turn_color: Checker.COLOR = Checker.COLOR.WHITE
 var cells: Dictionary[Vector2i, Cell] = {}
 var checkers: Dictionary[Vector2i, Checker] = {}
 
+var player1: Player
+@export var player1_cards_container: PlayerCardsContainer
+var player2: Player
+@export var player2_cards_container: PlayerCardsContainer
+
+var player_card_scene = preload("res://objects/card/PlayerCard.tscn")
+
+enum GameStates {
+	HANDOUT,
+	BETS,
+	TURNS
+}
+
+var cur_game_state: GameStates = GameStates.BETS
+var in_cutscene: bool = false
+
+var number_generator: RandomNumberGenerator
+
 func _ready():
+	number_generator = RandomNumberGenerator.new()
 	initialize_board()
 	start_new_turn(current_turn_color)
 
 func initialize_board():
+	for i in range(6):
+		var r_n:int = int(number_generator.randf_range(0.0, 7.0))
+		add_card(player1, r_n)
 	for y in range(board_height):
 		for x in range(board_width):
 			var pos = Vector2i(x, y)
@@ -25,6 +47,7 @@ func initialize_board():
 				create_checker(Checker.COLOR.BLACK, pos)
 			elif should_place_checker(pos, Checker.COLOR.WHITE):
 				create_checker(Checker.COLOR.WHITE, pos)
+	visual_manager.start_cutscene("MAKE YOUR BETS", 1.25)
 
 func create_cell(pos: Vector2i) -> Cell:
 	var cell = visual_manager.instantiate_cell_visual(pos)
@@ -48,11 +71,14 @@ func should_place_checker(pos: Vector2i, color: Checker.COLOR) -> bool:
 			return true
 	return false
 
-func start_new_turn(color: Checker.COLOR):
+func change_game_state(new_state:GameStates) -> void:
+	cur_game_state = new_state
+	
+func start_new_turn(color: Checker.COLOR) -> void:
 	current_turn_color = color
 	visual_manager.update_turn_display(color)
 
-func change_turn():
+func change_turn() -> void:
 	current_turn_color = Checker.COLOR.WHITE if current_turn_color == Checker.COLOR.BLACK else Checker.COLOR.BLACK
 	start_new_turn(current_turn_color)
 
@@ -102,3 +128,15 @@ func remove_checker(pos: Vector2i):
 		var checker = checkers[pos]
 		checkers.erase(pos)
 		visual_manager.remove_checker_visual(checker)
+		
+func add_card(player_target: Player, role: Checker.ROLES) -> void:
+	var new_card = player_card_scene.instantiate()
+	new_card.self_role = role
+	if player_target == player1:
+		player1_cards_container.add_child(new_card)
+	else:
+		player2_cards_container.add_child(new_card)
+
+class Player:
+	var cards: Array[Checker.ROLES] = [Checker.ROLES.SEDUCER, Checker.ROLES.AVENGER, Checker.ROLES.HUNTER, Checker.ROLES.GLUTTONY, Checker.ROLES.MARSHAL, Checker.ROLES.TRIXTER]
+	var balance: float = 1000.0

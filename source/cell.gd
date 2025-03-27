@@ -4,9 +4,13 @@ var using_flash: bool:
 	set(new_value):
 		using_flash = new_value
 		if new_value:
+			material.set("shader_parameter/transparency", 0.5)
 			material.set("shader_parameter/color_a", Color.LIGHT_SKY_BLUE)
+			visible = true
 		else:
+			material.set("shader_parameter/transparency", 0.0)
 			material.set("shader_parameter/color_a", Color.TRANSPARENT)
+			visible = false
 
 var board: Board
 var position_in_board: Vector2i = Vector2i.ZERO
