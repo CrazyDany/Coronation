@@ -36,7 +36,8 @@ func _ready():
 
 func initialize_board():
 	for i in range(6):
-		var r_n:int = int(number_generator.randf_range(0.0, 7.0))
+		var r_n:int = int(number_generator.randf_range(1.0, 7.0))
+		print(r_n)
 		add_card(player1, r_n)
 	for y in range(board_height):
 		for x in range(board_width):

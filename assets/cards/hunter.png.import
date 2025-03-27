@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bywf24i5a0xha"
-path="res://.godot/imported/score.png-0ea597064634578a22532cdcfea61231.ctex"
+uid="uid://ccp6whyakx5qe"
+path="res://.godot/imported/hunter.png-b1719a07b61bb1aaffcc85405288926f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/score.png"
-dest_files=["res://.godot/imported/score.png-0ea597064634578a22532cdcfea61231.ctex"]
+source_file="res://assets/cards/hunter.png"
+dest_files=["res://.godot/imported/hunter.png-b1719a07b61bb1aaffcc85405288926f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bywf24i5a0xha"
-path="res://.godot/imported/score.png-0ea597064634578a22532cdcfea61231.ctex"
+uid="uid://vi338r265x83"
+path="res://.godot/imported/mini_marshal.png-d588c982772fdc6def2beedffdd7a6f3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/score.png"
-dest_files=["res://.godot/imported/score.png-0ea597064634578a22532cdcfea61231.ctex"]
+source_file="res://assets/cards/mini_marshal.png"
+dest_files=["res://.godot/imported/mini_marshal.png-d588c982772fdc6def2beedffdd7a6f3.ctex"]
 
 [params]
 
